@@ -27,15 +27,8 @@ IMAGES_DIR = "./images"
 
 
 class LMStudioEmbeddings(Embeddings):
-    """
-    Обёртка над /v1/embeddings LM Studio под интерфейс LangChain.
-    Делает батчевую отправку текстов/
-    """
 
     def embed_documents(self, texts):
-        """
-        Возвращает эмбеддинги для списка текстов.
-        """
         out = []
         for i in range(0, len(texts), 64):
             batch = texts[i:i + 64]
@@ -72,9 +65,6 @@ def hashed_name(url):
 
 
 def download_image(img_url):
-    """
-    Скачивает изображение по URL в каталог IMAGES_DIR.
-    """
     os.makedirs(IMAGES_DIR, exist_ok=True)
     name = hashed_name(img_url)
     path = os.path.join(IMAGES_DIR, name)
@@ -93,10 +83,6 @@ def download_image(img_url):
 
 
 def ocr_extract_text(image_path):
-    """
-    Делает OCR изображения через Tesseract.
-    Возвращает распознанный текст или пустую строку.
-    """
     try:
         img = Image.open(image_path)
         if img.mode not in ("RGB", "L"):
@@ -108,12 +94,6 @@ def ocr_extract_text(image_path):
 
 
 def fetch_with_ocr(url):
-    """
-    Загружает HTML-страницу, вычищает "шум"
-    находит <img>, скачивает и прогоняет их через OCR,
-    В конце возвращает весь текст страницы
-    """
-    
     r = requests.get(url, timeout=30)
     r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
@@ -127,9 +107,6 @@ def fetch_with_ocr(url):
     ocr_results = {}
 
     def process_image(img):
-        """
-        Функция для пула потоков: скачивает картинку и делает OCR
-        """
         src = absolute_src(url, img.get("src") or img.get("data-src"))
         if not src:
             return (None, "")
@@ -168,9 +145,6 @@ def fetch_with_ocr(url):
 
 
 def chunk_text(text, max_chars=1200, overlap=150):
-    """
-    Нарезка текста на куски (чанки)
-    """
     paras = [p.strip() for p in text.split("\n") if p.strip()]
     chunks = []
     cur = ""
@@ -188,13 +162,6 @@ def chunk_text(text, max_chars=1200, overlap=150):
 
 
 def build_faiss_index(urls):
-    """
-    Для каждого URL:
-      - вытягиваем текст с OCR-вставками,
-      - режем на чанки,
-      - упаковываем в LangChain Document с metadata={"source": url}.
-    Затем строим FAISS-индекс по эмбеддингам и сохраняем локально
-    """
     corpus = []
     for url in urls:
         print(f"Обработка {url}")
@@ -216,11 +183,7 @@ def load_faiss_index():
 
 
 def chat_with_context(question, k=5):
-    """
-    Ищет k наиболее похожих чанков в FAISS по эмбеддингу вопроса,
-    собирает их в единый «контекст» и задаёт LM Studio вопрос с этим контекстом.
-    В промпте просим модель отвечать ТОЛЬКО по контексту и использовать OCR-блоки.
-    """
+    
     index = load_faiss_index()
     docs = index.similarity_search(question, k=k)
     context = "\n---\n".join(d.page_content for d in docs)
