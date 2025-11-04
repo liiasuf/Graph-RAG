@@ -27,4 +27,3 @@ hooks:
 
 clean:
 	rm -rf .pytest_cache .ruff_cache .mypy_cache
-
