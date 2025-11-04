@@ -1,0 +1,21 @@
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-select = ["I"]  # isort в ruff
+ignore = ["E203"]      # совместимость с black по срезам
+fix = true
+
+[tool.ruff.lint]
+select = ["E","F","I","B","W","UP","S","RUF"]
+ignore = []
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.mypy]
+python_version = "3.13"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_return_any = true
+strict = false
