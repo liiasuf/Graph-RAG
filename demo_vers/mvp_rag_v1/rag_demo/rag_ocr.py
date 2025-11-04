@@ -7,8 +7,6 @@ import argparse
 import requests
 import pytesseract
 
-
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
@@ -190,13 +188,15 @@ def chat_with_context(question, k=5):
 
     prompt = f"""
     You are a factual and concise assistant that answers questions strictly based on the provided context.
-    If the answer cannot be found in the context, explicitly say you don"t know.
-    When relevant, use information from blocks labeled [TEXT_FROM_IMAGE:] - these contain OCR text extracted from images.
-    Do not make up or assume facts not present in the context. Answer in clear, natural Russian.
-
+    If the answer cannot be found in the context, explicitly say you don't know.
+    When relevant, use information from blocks labeled [TEXT_FROM_IMAGE:] -
+    these contain OCR text extracted from images.
+    Do not make up or assume facts not present in the context.
+    Answer in clear, natural Russian.
+    
     Question:
     {question}
-
+    
     Context:
     {context}
     """
