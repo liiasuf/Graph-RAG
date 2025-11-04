@@ -155,10 +155,10 @@ def fetch_with_ocr(url):
             cap = fig.find('figcaption')
             if cap:
                 caption = cap.get_text(' ', strip=True)
-        ocr_text = ocr_results.get(src, '')
+        ocr_text = ocr_results.get(src, "")
         label = (
-            f'\n[IMAGE: {src or ''} | alt='{alt}' | caption='{caption}']\n'
-            f'[TEXT_FROM_IMAGE: {ocr_text}]\n'
+            f"\n[IMAGE: {src or ''} | alt='{alt}" | caption="{caption}']\n"
+            f"[TEXT_FROM_IMAGE: {ocr_text}]\n"
         )
         img.replace_with(label)
 
