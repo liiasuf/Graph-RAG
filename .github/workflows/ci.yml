@@ -39,16 +39,17 @@ jobs:
           pip install pre-commit ruff black mypy pytest pytest-cov
 
       - name: Run pre-commit (all files on CI)
-        run: pre-commit run --all-files || true
+        run: pre-commit run --all-files
 
       - name: Run tests
         run: |
-          pytest -q --maxfail=1 --disable-warnings --cov=./ --cov-report=xml || true
+          pytest -q --maxfail=1 --disable-warnings --cov=./ --cov-report=xml
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
           path: coverage.xml
+
 
 
