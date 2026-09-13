@@ -1,0 +1,48 @@
+experiment_name: wiki2multihop_graph_rerank__qwen3.8__quick
+output_dir: /Users/liiasufiianova/itmo/нир/rag_system/experiments/model_sweep_quick
+dataset:
+  name: wiki2multihop
+wiki2multihop:
+  train_split: train
+  eval_split: dev
+  max_corpus_docs: 300
+  max_eval_examples: 8
+chunking:
+  max_words: 220
+  overlap_words: 40
+embeddings:
+  base_url: http://127.0.0.1:1234/v1
+  api_key: LLM_API_KEY
+  model: text-embedding-nomic-embed-text-v1.5
+  batch_size: 64
+  use_cache: true
+  cache_path: cache/embeddings_bge_m3_e2e_wiki2multihop_graph_rerank__quick.json
+index:
+  backend: numpy_cosine
+retrieval:
+  top_k: 8
+  mode: graph_neo4j_rerank
+graph:
+  title_as_entity: true
+  max_entity_words: 5
+  min_entity_chars: 3
+  neo4j:
+    uri: bolt://localhost:7687
+    user: neo4j
+    password: neo4j_password_change_me
+    database: neo4j
+    clear_before_build: true
+    batch_size: 1000
+llm:
+  base_url: http://127.0.0.1:1234/v1
+  api_key: LLM_API_KEY
+  model: openai/gpt-oss-20b
+  temperature: 0.0
+  max_tokens: 128
+  timeout_s: 120.0
+  max_context_chars: 12000
+graph_rerank:
+  vector_pool_k: 30
+  beta: 0.5
+  hop_decay: 0.5
+  max_hops: 3
